@@ -11,8 +11,18 @@
     <div class="col-md-12">
       <h2>Items</h2>
       <ul class="list-group mb-4">
-        <!-- List the todo items here -->
+          {% for item in list %}
+              <li>{{ item.title }} - {{ item.status }}<form action="/completeditem" method="post">
+                  <input type="hidden" name="id" name="id" value="{{ item.id }}">
+                  <button type="submit">Done!</button>
+              </form>
+              </li>
+          {% endfor %}
       </ul>
+    <form action="/add-list-item" method="post">
+        <input type="text" id="textbox" name="textbox">
+        <button type="submit">Add a new item!</button>
+    </form>
     </div>
   </div>
 {% endblock %}
