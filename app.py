@@ -44,9 +44,14 @@ def trimCardsList(list_of_cards):
     for card in list_of_cards:
         trimmed_result.append({
             'name': card['name'],
-            'done': 'Complete!' if card['closed'] else 'Incomplete'
+            'status': getCardStatus(card['id'])
         })
     return trimmed_result
+
+def getCardStatus(card_id):
+    params = {'key': TRELLO_KEY, 'token': TRELLO_TKN}
+    board_name = requests.get(TRELLO_URL_BASE + 'cards/' + card_id + '/list', data=params).json()['name']
+    return 'Done!' if board_name == 'Done' else 'To-do'
 
 if __name__ == '__main__':
     app.run()
