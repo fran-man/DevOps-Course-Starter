@@ -1,16 +1,16 @@
 from flask import Flask, render_template, request, redirect
-import os
 import session_items as session
 import requests
+import trello_utils
 
 app = Flask(__name__)
 app.config.from_object('flask_config.Config')
 
-TRELLO_KEY = os.environ.get('TRELLO_KEY')
-TRELLO_TKN = os.environ.get('TRELLO_TKN')
+TRELLO_KEY = trello_utils.TRELLO_KEY
+TRELLO_TKN = trello_utils.TRELLO_TKN
 
-TRELLO_BOARD = '5f48fa1737fa77134ffe1e17'
-TRELLO_URL_BASE = 'https://api.trello.com/1/'
+TRELLO_BOARD = trello_utils.TRELLO_BOARD
+TRELLO_URL_BASE = trello_utils.TRELLO_URL_BASE
 
 
 @app.route('/')
@@ -18,7 +18,7 @@ def index():
     params = {'key': TRELLO_KEY, 'token': TRELLO_TKN}
     full_list = requests.get(TRELLO_URL_BASE + 'boards/' + TRELLO_BOARD + '/cards', data=params).json()
     # print full_list
-    return render_template('index.html', list=trimCardsList(full_list))
+    return render_template('index.html', list=trello_utils.trimCardsList(full_list))
 
 
 @app.route('/add-list-item', methods=['POST'])
@@ -38,20 +38,6 @@ def updateListItem():
     item_to_update['status'] = 'Done!'
     session.save_item(item_to_update)
     return redirect("/")
-
-def trimCardsList(list_of_cards):
-    trimmed_result = []
-    for card in list_of_cards:
-        trimmed_result.append({
-            'name': card['name'],
-            'status': getCardStatus(card['id'])
-        })
-    return trimmed_result
-
-def getCardStatus(card_id):
-    params = {'key': TRELLO_KEY, 'token': TRELLO_TKN}
-    board_name = requests.get(TRELLO_URL_BASE + 'cards/' + card_id + '/list', data=params).json()['name']
-    return 'Done!' if board_name == 'Done' else 'To-do'
 
 if __name__ == '__main__':
     app.run()
