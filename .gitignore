@@ -114,3 +114,7 @@ env/
 
 ### Configuration files ###
 .env
+
+**/venv/bin
+**/venv/include
+.idea/
