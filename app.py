@@ -37,10 +37,11 @@ def addListItem():
 def updateListItem():
     print("Updating Item!")
     print(request.form.get('id'))
-    item_to_update = session.get_item(request.form.get('id'))
-    print(item_to_update)
-    item_to_update['status'] = 'Done!'
-    session.save_item(item_to_update)
+    card_id = request.form.get('id')
+    query_url = TRELLO_URL_BASE + 'cards/' + card_id
+    params = {'idList': trello_utils.TRELLO_DONE_LIST}
+    params.update(DEFAULT_PARAMS)
+    requests.put(query_url, data=params)
     return redirect("/")
 
 if __name__ == '__main__':
