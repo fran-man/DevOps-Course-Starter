@@ -5,6 +5,7 @@ TRELLO_KEY = os.environ.get('TRELLO_KEY')
 TRELLO_TKN = os.environ.get('TRELLO_TKN')
 
 TRELLO_BOARD = '5f48fa1737fa77134ffe1e17'
+TRELLO_TODO_LIST = '5f48fa17b70abe80f7f0942d'
 TRELLO_URL_BASE = 'https://api.trello.com/1/'
 
 def trimCardsList(list_of_cards):
