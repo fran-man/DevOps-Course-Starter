@@ -2,6 +2,7 @@ from flask import Flask, render_template, request, redirect
 import session_items as session
 import requests
 import trello_utils
+from trello_utils import Card, getCardStatus
 
 app = Flask(__name__)
 app.config.from_object('flask_config.Config')
@@ -29,7 +30,12 @@ def addListItem():
     query_url = TRELLO_URL_BASE + 'cards'
     params = {'name': card_title, 'idList': trello_utils.TRELLO_TODO_LIST}
     params.update(DEFAULT_PARAMS)
-    requests.post(query_url, data=params)
+    result_json = requests.post(query_url, data=params).json()
+    trello_utils.updateOrAddCard(Card(
+        result_json['id'],
+        result_json['name'],
+        getCardStatus(result_json['id'])
+    ))
     return redirect("/")
 
 
