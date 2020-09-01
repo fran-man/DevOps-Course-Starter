@@ -29,9 +29,7 @@ def addListItem():
     query_url = TRELLO_URL_BASE + 'cards'
     params = {'name': card_title, 'idList': trello_utils.TRELLO_TODO_LIST}
     params.update(DEFAULT_PARAMS)
-    print params
     requests.post(query_url, data=params)
-    # session.add_item(request.form.get('textbox'))
     return redirect("/")
 
 
