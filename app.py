@@ -1,4 +1,5 @@
 from flask import Flask, render_template, request, redirect
+from ViewModel import TodoListViewModel
 import requests
 import trello_utils
 
@@ -17,7 +18,8 @@ DEFAULT_PARAMS = {'key': TRELLO_KEY, 'token': TRELLO_TKN}
 @app.route('/')
 def index():
     full_list = requests.get(TRELLO_URL_BASE + 'boards/' + TRELLO_BOARD + '/cards', data=DEFAULT_PARAMS).json()
-    return render_template('index.html', list=trello_utils.mapTrelloCardsToLocalRepresentation(full_list))
+    v_model = TodoListViewModel(trello_utils.mapTrelloCardsToLocalRepresentation(full_list))
+    return render_template('index.html', v_model=v_model)
 
 
 @app.route('/add-list-item', methods=['POST'])
