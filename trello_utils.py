@@ -12,9 +12,6 @@ TRELLO_URL_BASE = 'https://api.trello.com/1/'
 CARD_DONE_STATUS = 'Done!'
 CARD_TODO_STATUS = 'To-do'
 
-LOCAL_CARDS = []
-
-
 def mapTrelloCardsToLocalRepresentation(trello_cards):
     card_list = []
     for card in trello_cards:
