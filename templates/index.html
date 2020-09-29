@@ -12,8 +12,8 @@
       <h2>Items</h2>
       <ul class="list-group mb-4">
           {% for item in list %}
-              <li>{{ item.title }} - {{ item.status }}<form action="/completeditem" method="post">
-                  <input type="hidden" name="id" name="id" value="{{ item.id }}">
+              <li>{{ item.name }} - {{ item.status }}<form action="/completeditem" method="post">
+                  <input type="hidden" name="id" value="{{ item.id }}">
                   <button type="submit">Done!</button>
               </form>
               </li>

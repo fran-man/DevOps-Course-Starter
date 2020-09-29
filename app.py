@@ -1,29 +1,45 @@
-from flask import Flask, render_template, request, redirect, url_for
-import session_items as session
+from flask import Flask, render_template, request, redirect
+import requests
+import trello_utils
 
 app = Flask(__name__)
 app.config.from_object('flask_config.Config')
 
+TRELLO_KEY = trello_utils.TRELLO_KEY
+TRELLO_TKN = trello_utils.TRELLO_TKN
+
+TRELLO_BOARD = trello_utils.TRELLO_BOARD
+TRELLO_URL_BASE = trello_utils.TRELLO_URL_BASE
+
+DEFAULT_PARAMS = {'key': TRELLO_KEY, 'token': TRELLO_TKN}
+
+
 @app.route('/')
 def index():
-    full_list = session.get_items()
-    return render_template('index.html', list=full_list)
+    full_list = requests.get(TRELLO_URL_BASE + 'boards/' + TRELLO_BOARD + '/cards', data=DEFAULT_PARAMS).json()
+    return render_template('index.html', list=trello_utils.mapTrelloCardsToLocalRepresentation(full_list))
+
 
 @app.route('/add-list-item', methods=['POST'])
 def addListItem():
     print("Adding Item!")
-    print('Title=' + request.form.get('textbox'))
-    session.add_item(request.form.get('textbox'))
+    card_title = request.form.get('textbox')
+    query_url = TRELLO_URL_BASE + 'cards'
+    params = {'name': card_title, 'idList': trello_utils.TRELLO_TODO_LIST}
+    params.update(DEFAULT_PARAMS)
+    requests.post(query_url, data=params).json()
     return redirect("/")
+
 
 @app.route('/completeditem', methods=['POST'])
 def updateListItem():
     print("Updating Item!")
     print(request.form.get('id'))
-    item_to_update = session.get_item(request.form.get('id'))
-    print(item_to_update)
-    item_to_update['status'] = 'Done!'
-    session.save_item(item_to_update)
+    card_id = request.form.get('id')
+    query_url = TRELLO_URL_BASE + 'cards/' + card_id
+    params = {'idList': trello_utils.TRELLO_DONE_LIST}
+    params.update(DEFAULT_PARAMS)
+    requests.put(query_url, data=params)
     return redirect("/")
 
 if __name__ == '__main__':
