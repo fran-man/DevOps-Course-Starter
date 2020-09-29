@@ -15,15 +15,17 @@ CARD_TODO_STATUS = 'To-do'
 LOCAL_CARDS = []
 
 
-def trimCardsList(trello_cards):
+def mapTrelloCardsToLocalRepresentation(trello_cards):
+    card_list = []
     for card in trello_cards:
-        updateOrAddCard(Card(
+        card_list.append(Card(
             card['id'],
             card['name'],
             getCardStatus(card['id'])
         ))
-    print LOCAL_CARDS.sort(key=cardComparator)
-    return LOCAL_CARDS
+    card_list.sort(key=cardComparator)
+    print(card_list)
+    return card_list
 
 
 def cardComparator(c):
@@ -32,8 +34,8 @@ def cardComparator(c):
 
 def getCardStatus(card_id):
     params = {'key': TRELLO_KEY, 'token': TRELLO_TKN}
-    board_name = requests.get(TRELLO_URL_BASE + 'cards/' + card_id + '/list', data=params).json()['name']
-    return CARD_DONE_STATUS if board_name == 'Done' else CARD_TODO_STATUS
+    list_name = requests.get(TRELLO_URL_BASE + 'cards/' + card_id + '/list', data=params).json()['name']
+    return CARD_DONE_STATUS if list_name == 'Done' else CARD_TODO_STATUS
 
 
 class Card:
@@ -42,11 +44,3 @@ class Card:
         self.status = status
         self.name = name
 
-
-def updateOrAddCard(card):
-    result = filter(lambda x: x.id == card.id, LOCAL_CARDS)
-    if len(result) > 0:
-        result[0].status = card.status
-        result[0].name = card.name
-    else:
-        LOCAL_CARDS.append(card)
