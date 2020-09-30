@@ -1,0 +1,8 @@
+ul {
+    display: inline-block;
+}
+
+.list {
+    float:left;
+    width: 33%;
+}
