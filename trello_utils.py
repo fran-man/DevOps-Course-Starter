@@ -11,6 +11,7 @@ TRELLO_URL_BASE = 'https://api.trello.com/1/'
 
 CARD_DONE_STATUS = 'Done!'
 CARD_TODO_STATUS = 'To-do'
+CARD_DOING_STATUS = 'Doing'
 
 def mapTrelloCardsToLocalRepresentation(trello_cards):
     card_list = []
@@ -32,7 +33,12 @@ def cardComparator(c):
 def getCardStatus(card_id):
     params = {'key': TRELLO_KEY, 'token': TRELLO_TKN}
     list_name = requests.get(TRELLO_URL_BASE + 'cards/' + card_id + '/list', data=params).json()['name']
-    return CARD_DONE_STATUS if list_name == 'Done' else CARD_TODO_STATUS
+    if list_name == 'Done':
+        return CARD_DONE_STATUS
+    elif list_name == 'Doing':
+        return CARD_DOING_STATUS
+    else:
+        return CARD_TODO_STATUS
 
 
 class Card:
