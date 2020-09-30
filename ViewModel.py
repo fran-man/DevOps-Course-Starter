@@ -13,3 +13,8 @@ class TodoListViewModel:
     def items_todo(self):
         todo_items = list(filter(lambda x: x.status == CARD_TODO_STATUS, self._items))
         return todo_items
+
+    @property
+    def items_done(self):
+        done_items = list(filter(lambda x: x.status == CARD_DONE_STATUS, self._items))
+        return done_items

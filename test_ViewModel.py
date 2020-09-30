@@ -33,3 +33,28 @@ def test_items_todo_returns_only_todo_items():
     assert len(result) == 2
     assert result[0].id == '1'
     assert result[1].id == '2'
+
+
+def test_items_done_returns_only_done_items():
+    test_list = [
+        Card(
+            '1',
+            'name1',
+            CARD_TODO_STATUS
+        ),
+        Card(
+            '2',
+            'name2',
+            CARD_TODO_STATUS
+        ),
+        Card(
+            '3',
+            'name3',
+            CARD_DONE_STATUS
+        )
+    ]
+    view_model = TodoListViewModel(test_list)
+    result = list(view_model.items_done)
+    result.sort(key=cardComparator)
+    assert len(result) == 1
+    assert result[0].id == '3'
