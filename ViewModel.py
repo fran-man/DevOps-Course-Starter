@@ -1,4 +1,4 @@
-from trello_utils import CARD_DONE_STATUS, CARD_TODO_STATUS, CARD_DOING_STATUS, ISO_TIMESTAMP_FORMAT
+from trello_utils import CARD_DONE_STATUS, CARD_TODO_STATUS, CARD_DOING_STATUS, ISO_TIMESTAMP_FORMAT, cardComparatorTimestamp
 from datetime import date
 
 
@@ -44,7 +44,9 @@ class TodoListViewModel:
     @property
     def items_done_all(self):
         done_items = list(filter(lambda x: x.status == CARD_DONE_STATUS, self._items))
-        return done_items
+        done_items.sort(key=cardComparatorTimestamp, reverse=True)
+        result = done_items[0:5] if len(done_items) > 5 else done_items
+        return result
 
     @property
     def items_done_today(self):

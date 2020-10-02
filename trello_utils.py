@@ -33,6 +33,14 @@ def cardComparator(c):
     return 1 if c.status == CARD_DONE_STATUS else 0
 
 
+def cardComparatorId(c):
+    return int(c.id)
+
+
+def cardComparatorTimestamp(c):
+    return c.last_modified
+
+
 def getCardStatus(card_id):
     params = {'key': TRELLO_KEY, 'token': TRELLO_TKN}
     list_name = requests.get(TRELLO_URL_BASE + 'cards/' + card_id + '/list', data=params).json()['name']
