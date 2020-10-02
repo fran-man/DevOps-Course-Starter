@@ -76,9 +76,9 @@ def test_items_done_today_returns_items_completed_today():
     assert result[0].id == '5'
 
 
-def test_items_done_before_today_returns_items_completed_before_today():
+def test_older_done_items_returns_items_completed_before_today():
     view_model = TodoListViewModel(test_list)
-    result = list(view_model.items_done_before_today)
+    result = list(view_model.older_done_items)
     result.sort(key=cardComparator)
     assert len(result) == 1
     assert result[0].id == '3'

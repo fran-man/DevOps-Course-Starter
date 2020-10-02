@@ -52,6 +52,6 @@ class TodoListViewModel:
         return done_today_items
 
     @property
-    def items_done_before_today(self):
+    def older_done_items(self):
         done_items = list(filter(lambda x: is_done_before_day(x), self._items))
         return done_items
