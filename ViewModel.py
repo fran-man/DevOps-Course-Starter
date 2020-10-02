@@ -11,6 +11,13 @@ def is_done_today(card):
            and (today_end > card.last_modified)
 
 
+def is_done_before_day(card):
+    dt_today = date.today()
+    today_start = dt_today.strftime(ISO_TIMESTAMP_FORMAT)
+    return (card.status == CARD_DONE_STATUS) \
+           and (card.last_modified < today_start)
+
+
 class TodoListViewModel:
     def __init__(self, items):
         self._items = items
@@ -46,5 +53,5 @@ class TodoListViewModel:
 
     @property
     def items_done_before_today(self):
-        doing_items = list(filter(lambda x: x.status == CARD_DOING_STATUS, self._items))
-        return doing_items
+        done_items = list(filter(lambda x: is_done_before_day(x), self._items))
+        return done_items
