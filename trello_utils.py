@@ -9,6 +9,8 @@ TRELLO_TODO_LIST = '5f48fa17b70abe80f7f0942d'
 TRELLO_DONE_LIST = '5f48fa17d5f15e744c86a725'
 TRELLO_URL_BASE = 'https://api.trello.com/1/'
 
+ISO_TIMESTAMP_FORMAT = '%Y-%m-%dT%H:%M:%S.%fZ'
+
 CARD_DONE_STATUS = 'Done!'
 CARD_TODO_STATUS = 'To-do'
 CARD_DOING_STATUS = 'Doing'
@@ -19,7 +21,8 @@ def mapTrelloCardsToLocalRepresentation(trello_cards):
         card_list.append(Card(
             card['id'],
             card['name'],
-            getCardStatus(card['id'])
+            getCardStatus(card['id']),
+            card['dateLastActivity']
         ))
     card_list.sort(key=cardComparator)
     print(card_list)
@@ -42,8 +45,9 @@ def getCardStatus(card_id):
 
 
 class Card:
-    def __init__(self, id, name, status):
+    def __init__(self, id, name, status, last_modified):
         self.id = id
         self.status = status
         self.name = name
+        self.last_modified = last_modified
 
