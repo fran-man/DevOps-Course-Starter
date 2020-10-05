@@ -1,0 +1,14 @@
+import pytest
+from app import start_app
+from dotenv import find_dotenv, load_dotenv
+
+
+@pytest.fixture
+def client():
+    file_path = find_dotenv('.env.test')
+    load_dotenv(file_path, override=True)
+
+    test_app = start_app()
+
+    with test_app.test_client() as clnt:
+        yield clnt
