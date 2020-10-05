@@ -3,8 +3,14 @@ from ViewModel import TodoListViewModel
 import requests
 import trello_utils
 
-app = Flask(__name__)
-app.config.from_object('flask_config.Config')
+
+def start_app():
+    app = Flask(__name__)
+    app.config.from_object('flask_config.Config')
+    return app
+
+
+app = start_app()
 
 TRELLO_KEY = trello_utils.TRELLO_KEY
 TRELLO_TKN = trello_utils.TRELLO_TKN
@@ -43,6 +49,7 @@ def updateListItem():
     params.update(DEFAULT_PARAMS)
     requests.put(query_url, data=params)
     return redirect("/")
+
 
 if __name__ == '__main__':
     app.run()
