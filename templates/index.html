@@ -34,7 +34,7 @@
     </div>
     <div class="list">
     <ul class="list-group mb-4">
-          {% for item in v_model.items_done %}
+          {% for item in v_model.initial_display %}
               <li>{{ item.name }} - {{ item.status }}<form action="/completeditem" method="post">
                   <input type="hidden" name="id" value="{{ item.id }}">
                   <button type="submit">Done!</button>
@@ -43,6 +43,20 @@
           {% endfor %}
       </ul>
     </div>
+    <details>
+    <summary>Older Items</summary>
+    <div class="list">
+    <ul class="list-group mb-4">
+          {% for item in v_model.older_done_items %}
+              <li>{{ item.name }} - {{ item.status }}<form action="/completeditem" method="post">
+                  <input type="hidden" name="id" value="{{ item.id }}">
+                  <button type="submit">Done!</button>
+              </form>
+              </li>
+          {% endfor %}
+      </ul>
+    </div>
+    </details>
     <form action="/add-list-item" method="post">
         <input type="text" id="textbox" name="textbox">
         <button type="submit">Add a new item!</button>

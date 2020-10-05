@@ -57,3 +57,15 @@ class TodoListViewModel:
     def older_done_items(self):
         done_items = list(filter(lambda x: is_done_before_day(x), self._items))
         return done_items
+
+    @property
+    def initial_display(self):
+        if len(list(self.items_done)) > 5:
+            return self.items_done_today
+        else:
+            return self.items
+
+    @property
+    def overflow_items(self):
+        if len(list(self._items)) > 5:
+            return self.older_done_items
