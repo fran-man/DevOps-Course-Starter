@@ -1,0 +1,24 @@
+{
+    "id": "5f48fa17d5f15e744c86a725",
+    "name": "Done",
+    "closed": false,
+    "pos": 3,
+    "softLimit": null,
+    "creationMethod": "assisted",
+    "idBoard": "5f48fa1737fa77134ffe1e17",
+    "limits": {
+        "cards": {
+            "openPerList": {
+                "status": "ok",
+                "disableAt": 5000,
+                "warnAt": 4500
+            },
+            "totalPerList": {
+                "status": "ok",
+                "disableAt": 1000000,
+                "warnAt": 900000
+            }
+        }
+    },
+    "subscribed": false
+}
