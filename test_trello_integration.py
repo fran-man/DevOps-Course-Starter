@@ -1,3 +1,5 @@
+import os
+
 from flask import json
 from unittest.mock import patch, MagicMock
 

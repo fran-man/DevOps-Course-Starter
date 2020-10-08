@@ -7,7 +7,7 @@ while [[ "$#" -gt 0 ]]; do case $1 in
 esac; shift; done
 
 # Create and enable a virtual environment
-python -m venv --clear env
+python -m venv3 --clear env
 
 if [ $Windows == 1 ]
     then source env/scripts/activate
