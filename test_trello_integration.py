@@ -27,6 +27,8 @@ def test_example(client, monkeypatch):
     response = client.get('/')
     assert response.status_code == 200
     assert response.headers['Content-Type'] == 'text/html; charset=utf-8'
+    assert 'card1' in response.data.decode('utf-8')
+    assert 'card2' in response.data.decode('utf-8')
 
 
 class MockedCardsResponse:
