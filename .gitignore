@@ -117,4 +117,5 @@ env/
 
 **/venv/bin
 **/venv/include
+**/venv3/
 .idea/
