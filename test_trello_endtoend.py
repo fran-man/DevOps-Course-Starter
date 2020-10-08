@@ -4,6 +4,7 @@ from threading import Thread
 import pytest
 import requests
 from selenium import webdriver
+from selenium.webdriver.common.keys import Keys
 
 import app
 from app import DEFAULT_PARAMS
@@ -57,4 +58,9 @@ def test_basic_endtoend_flow(driver, test_app):
 
 def test_basic_create_card(driver, test_app):
     driver.get('http://localhost:5000')
-    assert driver.title == 'To-Do App'
+    input = driver.find_element_by_id('new_card_textbox')
+    input.send_keys('test_card')
+    input.send_keys(Keys.ENTER)
+
+    driver.implicitly_wait(20)
+    assert 'test_card' in driver.page_source

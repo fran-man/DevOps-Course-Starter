@@ -12,6 +12,8 @@ def start_app():
 
     TRELLO_BOARD = os.environ.get('TRELLO_BOARD')
 
+    all_lists = requests.get(TRELLO_URL_BASE + 'boards/' + TRELLO_BOARD + '/lists', data=DEFAULT_PARAMS).json()
+
     @app.route('/')
     def index():
         full_list = requests.get(TRELLO_URL_BASE + 'boards/' + TRELLO_BOARD + '/cards', data=DEFAULT_PARAMS).json()
@@ -21,9 +23,9 @@ def start_app():
     @app.route('/add-list-item', methods=['POST'])
     def addListItem():
         print("Adding Item!")
-        card_title = request.form.get('textbox')
+        card_title = request.form.get('new_card_textbox')
         query_url = TRELLO_URL_BASE + 'cards'
-        params = {'name': card_title, 'idList': trello_utils.TRELLO_TODO_LIST}
+        params = {'name': card_title, 'idList': get_todo_list_id()}
         params.update(DEFAULT_PARAMS)
         requests.post(query_url, data=params).json()
         return redirect("/")
@@ -34,10 +36,22 @@ def start_app():
         print(request.form.get('id'))
         card_id = request.form.get('id')
         query_url = TRELLO_URL_BASE + 'cards/' + card_id
-        params = {'idList': trello_utils.TRELLO_DONE_LIST}
+        params = {'idList': get_done_list_id()}
         params.update(DEFAULT_PARAMS)
         requests.put(query_url, data=params)
         return redirect("/")
+
+
+    def get_todo_list_id():
+        for trello_list in all_lists:
+            if trello_list['name'] == 'To Do':
+                return trello_list['id']
+
+
+    def get_done_list_id():
+        for trello_list in all_lists:
+            if trello_list['name'] == 'Done':
+                return trello_list['id']
 
     return app
 
