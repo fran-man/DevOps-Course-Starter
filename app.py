@@ -1,5 +1,3 @@
-import os
-
 from flask import Flask, render_template, request, redirect
 from ViewModel import TodoListViewModel
 import requests
@@ -8,7 +6,6 @@ import trello_utils
 
 def start_app():
     app = Flask(__name__)
-    app.config.from_object('flask_config.Config')
 
     TRELLO_KEY = trello_utils.TRELLO_KEY
     TRELLO_TKN = trello_utils.TRELLO_TKN
