@@ -16,7 +16,7 @@ def client():
 
     load_dotenv(file_path, override=True)
 
-    test_app = app.start_app()
+    test_app = app.create_app()
 
     test_app.testing = True
 

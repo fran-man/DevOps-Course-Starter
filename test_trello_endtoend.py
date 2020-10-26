@@ -35,7 +35,7 @@ def test_app():
     board_id = create_board()
     os.environ['TRELLO_BOARD'] = board_id
     # construct the new application
-    application = app.start_app()
+    application = app.create_app()
     # start the app in its own thread.
     thread = Thread(target=lambda: application.run(use_reloader=False))
     thread.daemon = True
@@ -58,4 +58,4 @@ def test_basic_create_card(driver, test_app):
     input.send_keys(Keys.ENTER)
 
     driver.implicitly_wait(20)
-    assert 'test_card' in driver.page_source
+    driver.find_elements_by_xpath("//li[contains(text(), 'test_card')]")
