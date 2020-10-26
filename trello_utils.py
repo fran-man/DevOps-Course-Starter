@@ -5,8 +5,6 @@ TRELLO_KEY = os.environ.get('TRELLO_KEY')
 TRELLO_TKN = os.environ.get('TRELLO_TKN')
 
 TRELLO_BOARD = os.environ.get('TRELLO_BOARD')
-TRELLO_TODO_LIST = '5f48fa17b70abe80f7f0942d'
-TRELLO_DONE_LIST = '5f48fa17d5f15e744c86a725'
 TRELLO_URL_BASE = 'https://api.trello.com/1/'
 
 ISO_TIMESTAMP_FORMAT = '%Y-%m-%dT%H:%M:%S.%fZ'
