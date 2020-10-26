@@ -7,12 +7,7 @@ from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 
 import app
-from app import DEFAULT_PARAMS
-from trello_utils import TRELLO_BOARD, TRELLO_URL_BASE
-
-# TRELLO_KEY = os.environ.get('TRELLO_KEY')
-# TRELLO_TKN = os.environ.get('TRELLO_TKN')
-# DEFAULT_PARAMS = {'key': TRELLO_KEY, 'token': TRELLO_TKN}
+from trello_utils import TRELLO_URL_BASE, DEFAULT_PARAMS
 
 def create_board():
     params = {'name': 'integration_test'}
