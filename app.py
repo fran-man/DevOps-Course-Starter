@@ -10,7 +10,13 @@ def start_app():
     app = Flask(__name__)
     app.config.from_object('flask_config.Config')
 
-    TRELLO_BOARD = os.environ.get('TRELLO_BOARD')
+    TRELLO_KEY = trello_utils.TRELLO_KEY
+    TRELLO_TKN = trello_utils.TRELLO_TKN
+
+    TRELLO_BOARD = trello_utils.TRELLO_BOARD
+    TRELLO_URL_BASE = trello_utils.TRELLO_URL_BASE
+
+    DEFAULT_PARAMS = {'key': TRELLO_KEY, 'token': TRELLO_TKN}
 
     all_lists = requests.get(TRELLO_URL_BASE + 'boards/' + TRELLO_BOARD + '/lists', data=DEFAULT_PARAMS).json()
 
@@ -41,12 +47,10 @@ def start_app():
         requests.put(query_url, data=params)
         return redirect("/")
 
-
     def get_todo_list_id():
         for trello_list in all_lists:
             if trello_list['name'] == 'To Do':
                 return trello_list['id']
-
 
     def get_done_list_id():
         for trello_list in all_lists:
@@ -55,14 +59,6 @@ def start_app():
 
     return app
 
-
-TRELLO_KEY = trello_utils.TRELLO_KEY
-TRELLO_TKN = trello_utils.TRELLO_TKN
-
-TRELLO_BOARD = trello_utils.TRELLO_BOARD
-TRELLO_URL_BASE = trello_utils.TRELLO_URL_BASE
-
-DEFAULT_PARAMS = {'key': TRELLO_KEY, 'token': TRELLO_TKN}
 
 app = start_app()
 
