@@ -36,7 +36,17 @@ Now visit [`http://localhost:5000/`](http://localhost:5000/) in your web browser
 
 ### Notes
 
-The `.env` file is used by flask to set environment variables when running `flask run`. This enables things like developement mode (which also enables features like hot reloading when you make a file change).
-* There's also a [SECRET_KEY](https://flask.palletsprojects.com/en/1.1.x/config/#SECRET_KEY) variable which is used to encrypt the flask session cookie.
+The `.env` file is used by flask to set environment variables when running `flask run`. This enables things like
+development mode (which also enables features like hot reloading when you make a file change).
 
 When running `setup.sh`, the `.env.template` file will be copied to `.env` if the latter does not exist.
+
+### Required .env Vars
+As it stands, there are some variables that are required for the app to work (see `.env.template`) for example.
+    
+    # Represents the API key an token that you will need to retrieve from trello
+    TRELLO_KEY=XXXX
+    TRELLO_TKN=YYYY
+    # The id of the trello board that you wish the app to interact with.
+    # This can be obtained by manually calling the API with postman, or via the trello site
+    TRELLO_BOARD=ZZZZ
