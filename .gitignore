@@ -117,4 +117,8 @@ env/
 
 **/venv/bin
 **/venv/include
+**/venv3/
 .idea/
+
+## Integration test stuff
+geckodriver.log
