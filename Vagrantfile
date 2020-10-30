@@ -23,8 +23,36 @@ Vagrant.configure("2") do |config|
   # argument is a set of non-required options.
   # config.vm.synced_folder "../data", "/vagrant_data"
 
-  # config.vm.provision "shell", inline: <<-SHELL
-  #   apt-get update
-  #   apt-get install -y apache2
-  # SHELL
+  config.vm.provision "shell", privileged: false, inline: <<-SHELL
+    sudo apt-get update
+
+    sudo apt-get install -y build-essential libssl-dev zlib1g-dev libbz2-dev \
+    libreadline-dev libsqlite3-dev wget curl llvm libncurses5-dev libncursesw5-dev \
+    xz-utils tk-dev libffi-dev liblzma-dev python-openssl git
+
+    sudo apt-get install -y --no-install-recommends make build-essential libssl-dev \
+    zlib1g-dev libbz2-dev libreadline-dev libsqlite3-dev wget curl llvm libncurses5-dev \
+    xz-utils tk-dev libxml2-dev libxmlsec1-dev libffi-dev liblzma-dev
+
+    mkdir .pyenv
+    git clone https://github.com/pyenv/pyenv.git .pyenv
+
+    echo 'export PYENV_ROOT="$HOME/.pyenv"' >> .profile
+    echo 'export PATH="$PYENV_ROOT/bin:$PATH"' >> .profile
+    echo -e 'if command -v pyenv 1>/dev/null 2>&1; then\n  eval "$(pyenv init -)"\nfi' >> .profile
+
+    pyenv install 3.8.6
+    pyenv global 3.8.6
+
+    curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python
+
+    # Due to issues running on a windows host, we need to move this to a native
+    # directory inside the vm...
+    mkdir Devops-Starter
+    cp -r /vagrant/ Devops-Starter/
+    cp /vagrant/.env Devops-Starter/
+
+    poetry add requests
+    poetry install
+  SHELL
 end

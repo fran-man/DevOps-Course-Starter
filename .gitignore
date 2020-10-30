@@ -122,3 +122,6 @@ env/
 
 ## Integration test stuff
 geckodriver.log
+
+.vagrant/*
+.venv/*
