@@ -1,26 +1,33 @@
 # DevOps Apprenticeship: Project Exercise
 
-## Getting started
+## Running with Poetry
+This application has been migrated to work with poetry. In order to leverage this you will have to do a small amount of
+configuration and setup
 
-The project uses a virtual environment to isolate package dependencies. To create the virtual environment and install required packages, run the following from a bash shell terminal:
+### Install Poetry
 
-### On macOS and Linux
-```bash
-$ source setup.sh
-```
-### On Windows (Using PowerShell)
-```powershell
-$ .\setup.ps1
-```
-### On Windows (Using Git Bash)
-```bash
-$ source setup.sh --windows
-```
+#### Windows (Powershell)
+    (Invoke-WebRequest -Uri https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py -UseBasicParsing).Content | python -
 
-Once the setup script has completed and all packages have been installed, start the Flask app by running:
-```bash
-$ flask run
-```
+#### *nix (e.g. using BASH)
+    curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python
+    
+Once this is done, run
+    
+    poetry --version
+to check that poetry was installed correctly. If not, you may have to make sure that poetry is added to your path.
+
+### Installing Dependencies with Poetry
+Please run
+
+    poetry add requests
+    poetry install
+    
+### Running The App
+You should now be able to run the app with:
+
+    poetry run flask run
+The app should run with similar output and behaviour to before.
 
 You should see output similar to the following:
 ```bash
@@ -33,6 +40,26 @@ You should see output similar to the following:
  * Debugger PIN: 226-556-590
 ```
 Now visit [`http://localhost:5000/`](http://localhost:5000/) in your web browser to view the app.
+
+## Running Inside Vagrant
+This application has also been setup to run inside a VM with vagrant. You will need to have [vagrant](https://www.vagrantup.com/)
+installed.
+
+The vagrant file has been setup to do all of the heavy lifting when it comes to installing dependencies and running the
+app, including:
+- apt-get installing all the dependencies
+- Setting up all the environment variables
+- Uplifting default python version to 3.x
+- Install poetry
+- Install python libs required
+- Starting the app and exposing the required port
+
+Therefore, once you installed vagrant, all you should need to do is run
+
+    vagrant up
+
+And you should then see vagrant doing all the setup steps above and eventually, the output from the application.
+Then you can navigate to localhost:8080 and you should see your application running!
 
 ### Notes
 
