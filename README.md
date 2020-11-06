@@ -27,9 +27,7 @@ Please run
 You should now be able to run the app with:
 
     poetry run flask run
-The app should run with similar output and behaviour to before.
-
-You should see output similar to the following:
+The app should run with similar output and behaviour to before:
 ```bash
  * Serving Flask app "app" (lazy loading)
  * Environment: development
