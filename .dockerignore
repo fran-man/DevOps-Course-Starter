@@ -1,0 +1,8 @@
+.env
+.env.template
+.env.test
+docker.env
+.gitignore
+.vagrant
+pytest.ini
+test_*

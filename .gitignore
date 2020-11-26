@@ -114,6 +114,7 @@ env/
 
 ### Configuration files ###
 .env
+docker.env
 
 **/venv/bin
 **/venv/include
