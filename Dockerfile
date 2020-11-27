@@ -8,11 +8,9 @@ EXPOSE 5000
 
 FROM base as development
 COPY requirements-dev.txt /app
-RUN pip3 install -r requirements-dev.txt
-RUN rm requirements-dev.txt
+RUN pip3 install -r requirements-dev.txt; rm requirements-dev.txt
 COPY static /app/static
 COPY templates /app/templates
-#COPY app.py trello_utils.py ViewModel.py /app/
 
 ENTRYPOINT ["python", "/app/app.py"]
 
