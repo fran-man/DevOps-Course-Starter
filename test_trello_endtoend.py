@@ -6,6 +6,8 @@ import requests
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 
+from dotenv import load_dotenv
+
 import app
 from trello_utils import TRELLO_URL_BASE, DEFAULT_PARAMS
 
@@ -31,6 +33,8 @@ def driver():
 
 @pytest.fixture(scope='module')
 def test_app():
+    load_dotenv()
+
     # Create the new board & update the board id environment variable
     board_id = create_board()
     os.environ['TRELLO_BOARD'] = board_id
