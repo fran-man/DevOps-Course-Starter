@@ -39,6 +39,13 @@ The app should run with similar output and behaviour to before:
 ```
 Now visit [`http://localhost:5000/`](http://localhost:5000/) in your web browser to view the app.
 
+### Running the tests
+Simply run
+
+    pytest
+
+To automatically run all test_*.py files. 
+
 ## Running Inside Vagrant
 This application has also been setup to run inside a VM with vagrant. You will need to have [vagrant](https://www.vagrantup.com/)
 installed.
