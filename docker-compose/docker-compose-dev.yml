@@ -1,7 +1,7 @@
 version: '3'
 services:
   todo-app-development:
-    image: mod5:dev2
+    image: mod5:dev
     ports:
     - "5000:5000"
     volumes:

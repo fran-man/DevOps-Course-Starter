@@ -1,8 +1,11 @@
-.env
 .env.template
 .env.test
-docker.env
 .gitignore
 .vagrant
-pytest.ini
 test_*
+cards_example_response.json
+Dockerfile
+list_example.json
+pytest.ini
+README.md
+Vagrantfile

@@ -13,8 +13,6 @@ FROM base as development
 ENTRYPOINT [ "/root/.poetry/bin/poetry", "run", "flask", "run", "--host=0.0.0.0"]
 
 FROM base as production
-COPY static /app/static
-COPY templates /app/templates
-COPY app.py gunicorn_config.py trello_utils.py ViewModel.py wsgi.py /app/
+COPY . ./
 
 ENTRYPOINT [ "/root/.poetry/bin/poetry", "run", "gunicorn", "--config", "gunicorn_config.py", "wsgi:app"]
