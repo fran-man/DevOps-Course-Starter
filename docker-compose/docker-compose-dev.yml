@@ -1,11 +1,7 @@
 version: '3'
 services:
   todo-app-development:
-    image: mod5:dev
-    environment:
-      TRELLO_KEY: <SECRET>
-      TRELLO_TKN: <SECRET>
-      TRELLO_BOARD: <SECRET>
+    image: mod5:dev2
     ports:
     - "5000:5000"
     volumes:
