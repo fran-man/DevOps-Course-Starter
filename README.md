@@ -59,12 +59,46 @@ Therefore, once you installed vagrant, all you should need to do is run
 And you should then see vagrant doing all the setup steps above and eventually, the output from the application.
 Then you can navigate to localhost:8080 and you should see your application running!
 
+## Running in Docker
+This app has been setup to run inside docker containers
+
+There are two options
+- Development - will run the application with hot reloading, using flask
+- Production - will run the application in a using production-appropriate HTTP server gunicorn
+
+### Building
+Development
+    
+    docker build --target development --tag todo-app:dev .
+    
+Production
+
+    docker build --target production --tag todo-app:prod .
+    
+Feel free to customise the image name and tag to your liking.
+
+You can then run the application directly, or by using the included docker-compose files which will handle things like 
+bind mounts and exposing ports for you.
+
+    # Using docker-compose for orchestration
+    docker-compose -f docker-compose-dev.yml up
+    
+    # OR using docker run directly
+    # Bind mount not required for production image
+    docker run -p 5000:5000 --mount type=bind,source=<PROJECT_ROOT>,target=/app <image>:<tag>
+    
+Note that `<PROJECT_ROOT>` must be absolute.
+
+You will then be able to view the application on http://localhost:5000/    
+
 ### Notes
 
 The `.env` file is used by flask to set environment variables when running `flask run`. This enables things like
 development mode (which also enables features like hot reloading when you make a file change).
 
 When running `setup.sh`, the `.env.template` file will be copied to `.env` if the latter does not exist.
+
+When running the production docker image, no bind mount is required since `Dockerfile` copies all the files into the image
 
 ### Required .env Vars
 As it stands, there are some variables that are required for the app to work (see `.env.template`) for example.
