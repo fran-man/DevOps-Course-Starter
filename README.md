@@ -89,7 +89,19 @@ bind mounts and exposing ports for you.
     
 Note that `<PROJECT_ROOT>` must be absolute.
 
-You will then be able to view the application on http://localhost:5000/    
+You will then be able to view the application on http://localhost:5000/
+
+### Testing (in docker)
+The `Dockerfile` has a special stage for running tests.
+
+To build:
+    
+     docker build --target test --tag <image>:<tag> .
+To run:
+
+    docker run --mount type=bind,source=<PATH_ON_LOCAL>,target=/app <image>:<tag> .
+    
+NOTE: As of right now, the e2e selenium tests do not work.
 
 ### Notes
 
