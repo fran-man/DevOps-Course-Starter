@@ -16,3 +16,7 @@ FROM base as production
 COPY . ./
 
 ENTRYPOINT [ "/root/.poetry/bin/poetry", "run", "gunicorn", "--config", "gunicorn_config.py", "wsgi:app"]
+
+FROM base as test
+
+ENTRYPOINT ["/root/.poetry/bin/poetry", "run", "pytest"]
