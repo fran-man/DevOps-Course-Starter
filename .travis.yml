@@ -1,2 +1,2 @@
 script:
-- docker build --target test --tag fran-manDevOps:test0.1 .
+- docker build --target test --tag fran-man-devops:test0.1 .
