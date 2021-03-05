@@ -1,11 +1,4 @@
 script:
 - |
-  docker build --target testt --tag georgefrancis:test0.1 .
+  docker build --target test --tag georgefrancis:test0.1 .
   docker run --mount type=bind,source="$(pwd)",target=/app --env TRELLO_KEY --env TRELLO_TKN --env TRELLO_BOARD georgefrancis:test0.1 .
-
-notifications:
-  email:
-    recipients:
-    - NOTIFICATION_EMAIL
-    on_success: never
-    on_failure: always
