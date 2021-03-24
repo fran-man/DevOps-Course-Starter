@@ -40,6 +40,5 @@ RUN sed -i -e 's/archive.ubuntu.com\|security.ubuntu.com/old-releases.ubuntu.com
     apt-get -y install libglib2.0 libnss3 libxcb-randr0-dev libxcb-xtest0-dev libxcb-xinerama0-dev libxcb-shape0-dev libxcb-xkb-dev
 
 WORKDIR /app
-ENV PYTHONPATH=.
 
 ENTRYPOINT [ "poetry", "run", "pytest" ]

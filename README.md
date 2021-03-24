@@ -99,9 +99,7 @@ To build:
      docker build --target test --tag <image>:<tag> .
 To run:
 
-    docker run --mount type=bind,source=<PATH_ON_LOCAL>,target=/app <image>:<tag> .
-    
-NOTE: As of right now, the e2e selenium tests do not work.
+    docker run --mount type=bind,source=<PATH_ON_LOCAL>,target=/app <image>:<tag>
 
 ### Notes
 
@@ -121,3 +119,7 @@ As it stands, there are some variables that are required for the app to work (se
     # The id of the trello board that you wish the app to interact with.
     # This can be obtained by manually calling the API with postman, or via the trello site
     TRELLO_BOARD=ZZZZ
+    
+## Travis
+The application has been enhanced to allow the tests to be run by travis (inside a docker container). Please see `.travis.yml`.
+The secrets are stored within travis to avoid committing them to source control. These are managed within the travis GUI.
