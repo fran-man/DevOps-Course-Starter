@@ -15,3 +15,7 @@ jobs:
         - docker tag georgefrancis/devops-starter:"$TRAVIS_COMMIT" georgefrancis/devops-starter:latest
         - docker push georgefrancis/devops-starter:"$TRAVIS_COMMIT"
         - docker push georgefrancis/devops-starter:latest
+        - echo "$HEROKU_TKN" | docker login --username=_ --password-stdin registry.heroku.com
+        - docker tag georgefrancis/devops-starter:"$TRAVIS_COMMIT" registry.heroku.com/gsf-devops-mod8/web
+        - docker push registry.heroku.com/gsf-devops-mod8/web
+        - heroku container:release web
