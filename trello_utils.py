@@ -4,6 +4,8 @@ import requests
 TRELLO_KEY = os.environ.get('TRELLO_KEY')
 TRELLO_TKN = os.environ.get('TRELLO_TKN')
 
+MONGO_PASS = os.environ.get('MONGO_PASS')
+
 DEFAULT_PARAMS = {'key': TRELLO_KEY, 'token': TRELLO_TKN}
 
 TRELLO_BOARD = os.environ.get('TRELLO_BOARD')
@@ -15,18 +17,23 @@ CARD_DONE_STATUS = 'Done!'
 CARD_TODO_STATUS = 'To-do'
 CARD_DOING_STATUS = 'Doing'
 
-def mapTrelloCardsToLocalRepresentation(trello_cards):
-    card_list = []
-    for card in trello_cards:
-        card_list.append(Card(
-            card['id'],
-            card['name'],
-            getCardStatus(card['id']),
-            card['dateLastActivity']
-        ))
-    card_list.sort(key=cardComparator)
-    print(card_list)
-    return card_list
+MONGO_LIST_DONE = 'done_items'
+MONGO_LIST_DOING = 'doing'
+MONGO_LIST_TODO = 'to_do'
+
+def mapTrelloCardsToLocalRepresentation(cards):
+    all_card_list = []
+    for status, status_list in cards.items():
+        for card in status_list:
+            all_card_list.append(Card(
+                str(card['_id']),
+                card['name'],
+                getCardStatusFromListName(status),
+                card['dateLastActivity']
+            ))
+    all_card_list.sort(key=cardComparator)
+    print(all_card_list)
+    return all_card_list
 
 
 def cardComparator(c):
@@ -41,12 +48,10 @@ def cardComparatorTimestamp(c):
     return c.last_modified
 
 
-def getCardStatus(card_id):
-    params = {'key': TRELLO_KEY, 'token': TRELLO_TKN}
-    list_name = requests.get(TRELLO_URL_BASE + 'cards/' + card_id + '/list', data=params).json()['name']
-    if list_name == 'Done':
+def getCardStatusFromListName(list_name):
+    if list_name == MONGO_LIST_DONE:
         return CARD_DONE_STATUS
-    elif list_name == 'Doing':
+    elif list_name == MONGO_LIST_DOING:
         return CARD_DOING_STATUS
     else:
         return CARD_TODO_STATUS

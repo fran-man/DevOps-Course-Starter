@@ -2,6 +2,7 @@ from flask import Flask, render_template, request, redirect
 from ViewModel import TodoListViewModel
 import requests
 import trello_utils
+import pymongo
 
 
 def create_app():
@@ -12,11 +13,16 @@ def create_app():
 
     DEFAULT_PARAMS = trello_utils.DEFAULT_PARAMS
 
+    MONGO_PASS = trello_utils.MONGO_PASS
+
     all_lists = requests.get(TRELLO_URL_BASE + 'boards/' + TRELLO_BOARD + '/lists', data=DEFAULT_PARAMS).json()
+
+    mongo_client = pymongo.MongoClient("mongodb+srv://GEORGE_DEVOPS:" + MONGO_PASS +"@cluster0.wyf78.mongodb.net/DevopsEx?retryWrites=true&w=majority")
+    devops_database = mongo_client['DevopsEx']
 
     @app.route('/')
     def index():
-        full_list = requests.get(TRELLO_URL_BASE + 'boards/' + TRELLO_BOARD + '/cards', data=DEFAULT_PARAMS).json()
+        full_list = get_all_cards()
         v_model = TodoListViewModel(trello_utils.mapTrelloCardsToLocalRepresentation(full_list))
         return render_template('index.html', v_model=v_model)
 
@@ -50,6 +56,16 @@ def create_app():
         for trello_list in all_lists:
             if trello_list['name'] == 'Done':
                 return trello_list['id']
+
+    def get_all_cards():
+        to_do_items = devops_database['to_do'].find()
+        doing_items = devops_database['doing'].find()
+        done_items = devops_database['done'].find()
+        return {
+            trello_utils.MONGO_LIST_TODO: to_do_items,
+            trello_utils.MONGO_LIST_DOING: doing_items,
+            trello_utils.MONGO_LIST_DONE: done_items
+        }
 
     return app
 
