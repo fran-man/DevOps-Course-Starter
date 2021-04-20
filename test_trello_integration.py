@@ -1,10 +1,9 @@
 import os
 
 from flask import json
-from unittest.mock import patch, MagicMock
 
 import pytest
-import requests
+from bson.objectid import ObjectId
 from dotenv import find_dotenv, load_dotenv
 
 import app
@@ -25,7 +24,7 @@ def client():
 
 
 def test_example(client, monkeypatch):
-    monkeypatch.setattr(requests, 'get', lambda url, data: mock_get(url))
+    monkeypatch.setattr('pymongo.MongoClient', mock_mongo)
     response = client.get('/')
     assert response.status_code == 200
     assert response.headers['Content-Type'] == 'text/html; charset=utf-8'
@@ -49,11 +48,24 @@ class MockedListResponse:
         return json.loads(content)
 
 
-def mock_get(url):
-    if url.endswith('/cards'):
-        return MockedCardsResponse()
-    elif url.endswith('/list'):
-        return MockedListResponse()
+class MockMongoCollection:
+    def __init__(self, name):
+        self.name = name
+
+    def find(self):
+        print(self.name)
+        return [{
+            '_id': ObjectId('607ebb23beec53b28f23b194'),
+            'name': self.name,
+            'dateLastActivity': '2021-04-20T13:51:44.000000'
+        }]
+
+
+def mock_mongo(*args, **kwargs):
+    return {'DevopsEx': {'to_do': MockMongoCollection('card1'),
+                         'doing': MockMongoCollection('card2'),
+                         'done_items': MockMongoCollection('card3')
+                         }}
 
 
 def example_repsponse():

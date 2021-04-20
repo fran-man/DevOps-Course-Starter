@@ -1,7 +1,7 @@
 from flask import Flask, render_template, request, redirect
 from ViewModel import TodoListViewModel
 import trello_utils
-from pymongo import MongoClient
+import pymongo
 from bson.objectid import ObjectId
 import datetime
 
@@ -9,13 +9,11 @@ import datetime
 def create_app():
     app = Flask(__name__)
 
-    MONGO_PASS = trello_utils.MONGO_PASS
-
-    mongo_client = MongoClient("mongodb+srv://GEORGE_DEVOPS:" + MONGO_PASS +"@cluster0.wyf78.mongodb.net/DevopsEx?retryWrites=true&w=majority")
-    devops_database = mongo_client['DevopsEx']
+    mongo_manager = MongoConnectionManager()
 
     @app.route('/')
     def index():
+        print('getting all cards!!!')
         full_list = get_all_cards()
         v_model = TodoListViewModel(trello_utils.mapTrelloCardsToLocalRepresentation(full_list))
         return render_template('index.html', v_model=v_model)
@@ -28,6 +26,7 @@ def create_app():
             'name': card_title,
             'dateLastActivity': datetime.datetime.now().isoformat()
         }
+        devops_database = mongo_manager.get_database()
         inserted_id = devops_database[trello_utils.MONGO_LIST_TODO].insert_one(card).inserted_id
         print('Created card with ID: ' + str(inserted_id))
         return redirect("/")
@@ -38,6 +37,9 @@ def create_app():
         print(request.form.get('id'))
         card_id = request.form.get('id')
         card_old_list = trello_utils.MONGO_LIST_TODO
+
+        devops_database = mongo_manager.get_database()
+
         completed_card = devops_database[trello_utils.MONGO_LIST_TODO].find_one({'_id': ObjectId(card_id)})
         if completed_card is None:
             card_old_list = trello_utils.MONGO_LIST_DOING
@@ -50,6 +52,7 @@ def create_app():
         return redirect("/")
 
     def get_all_cards():
+        devops_database = mongo_manager.get_database()
         to_do_items = devops_database['to_do'].find()
         doing_items = devops_database['doing'].find()
         done_items = devops_database['done_items'].find()
@@ -60,6 +63,18 @@ def create_app():
         }
 
     return app
+
+
+class MongoConnectionManager:
+    MONGO_PASS = trello_utils.MONGO_PASS
+
+    mongo_client = None
+
+    def get_database(self):
+        if self.mongo_client is None:
+            self.mongo_client = pymongo.MongoClient(
+                "mongodb+srv://GEORGE_DEVOPS:" + self.MONGO_PASS + "@cluster0.wyf78.mongodb.net/DevopsEx?retryWrites=true&w=majority")
+        return self.mongo_client['DevopsEx']
 
 
 app = create_app()
