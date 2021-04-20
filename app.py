@@ -1,23 +1,17 @@
 from flask import Flask, render_template, request, redirect
 from ViewModel import TodoListViewModel
-import requests
 import trello_utils
-import pymongo
+from pymongo import MongoClient
+from bson.objectid import ObjectId
+import datetime
 
 
 def create_app():
     app = Flask(__name__)
 
-    TRELLO_BOARD = trello_utils.TRELLO_BOARD
-    TRELLO_URL_BASE = trello_utils.TRELLO_URL_BASE
-
-    DEFAULT_PARAMS = trello_utils.DEFAULT_PARAMS
-
     MONGO_PASS = trello_utils.MONGO_PASS
 
-    all_lists = requests.get(TRELLO_URL_BASE + 'boards/' + TRELLO_BOARD + '/lists', data=DEFAULT_PARAMS).json()
-
-    mongo_client = pymongo.MongoClient("mongodb+srv://GEORGE_DEVOPS:" + MONGO_PASS +"@cluster0.wyf78.mongodb.net/DevopsEx?retryWrites=true&w=majority")
+    mongo_client = MongoClient("mongodb+srv://GEORGE_DEVOPS:" + MONGO_PASS +"@cluster0.wyf78.mongodb.net/DevopsEx?retryWrites=true&w=majority")
     devops_database = mongo_client['DevopsEx']
 
     @app.route('/')
@@ -30,37 +24,35 @@ def create_app():
     def addListItem():
         print("Adding Item!")
         card_title = request.form.get('new_card_textbox')
-        query_url = TRELLO_URL_BASE + 'cards'
-        params = {'name': card_title, 'idList': get_todo_list_id()}
-        params.update(DEFAULT_PARAMS)
-        requests.post(query_url, data=params).json()
+        card = {
+            'name': card_title,
+            'dateLastActivity': datetime.datetime.now().isoformat()
+        }
+        inserted_id = devops_database[trello_utils.MONGO_LIST_TODO].insert_one(card).inserted_id
+        print('Created card with ID: ' + str(inserted_id))
         return redirect("/")
 
     @app.route('/completeditem', methods=['POST'])
     def updateListItem():
-        print("Updating Item!")
+        print('Updating Item!')
         print(request.form.get('id'))
         card_id = request.form.get('id')
-        query_url = TRELLO_URL_BASE + 'cards/' + card_id
-        params = {'idList': get_done_list_id()}
-        params.update(DEFAULT_PARAMS)
-        requests.put(query_url, data=params)
+        card_old_list = trello_utils.MONGO_LIST_TODO
+        completed_card = devops_database[trello_utils.MONGO_LIST_TODO].find_one({'_id': ObjectId(card_id)})
+        if completed_card is None:
+            card_old_list = trello_utils.MONGO_LIST_DOING
+            completed_card = devops_database[trello_utils.MONGO_LIST_DOING].find_one({'_id': ObjectId(card_id)})
+            if completed_card is None:
+                print('No card to update with ID: ' + card_id)
+                return redirect("/")
+        devops_database[card_old_list].delete_one({'_id': completed_card['_id']})
+        devops_database[trello_utils.MONGO_LIST_DONE].insert_one(completed_card)
         return redirect("/")
-
-    def get_todo_list_id():
-        for trello_list in all_lists:
-            if trello_list['name'] == 'Things To Do':
-                return trello_list['id']
-
-    def get_done_list_id():
-        for trello_list in all_lists:
-            if trello_list['name'] == 'Done':
-                return trello_list['id']
 
     def get_all_cards():
         to_do_items = devops_database['to_do'].find()
         doing_items = devops_database['doing'].find()
-        done_items = devops_database['done'].find()
+        done_items = devops_database['done_items'].find()
         return {
             trello_utils.MONGO_LIST_TODO: to_do_items,
             trello_utils.MONGO_LIST_DOING: doing_items,

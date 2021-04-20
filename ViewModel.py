@@ -59,11 +59,11 @@ class TodoListViewModel:
         return done_items
 
     @property
-    def initial_display(self):
+    def done_most_recent(self):
         if len(list(self.items_done)) > 5:
             return self.items_done_today
         else:
-            return self.items
+            return self.items_done
 
     @property
     def overflow_items(self):

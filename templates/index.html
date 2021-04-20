@@ -11,6 +11,7 @@
     <div class="col-md-12">
       <h2>Items</h2>
     <div class="list">
+        <h3>To-Do</h3>
       <ul class="list-group mb-4">
           {% for item in v_model.items_todo %}
               <li>{{ item.name }} - {{ item.status }}<form action="/completeditem" method="post">
@@ -22,6 +23,7 @@
       </ul>
     </div>
     <div class="list">
+        <h3>Doing</h3>
     <ul class="list-group mb-4">
           {% for item in v_model.items_doing %}
               <li>{{ item.name }} - {{ item.status }}<form action="/completeditem" method="post">
@@ -33,8 +35,9 @@
       </ul>
     </div>
     <div class="list">
+        <h3>Done</h3>
     <ul class="list-group mb-4">
-          {% for item in v_model.initial_display %}
+          {% for item in v_model.done_most_recent %}
               <li>{{ item.name }} - {{ item.status }}<form action="/completeditem" method="post">
                   <input type="hidden" name="id" value="{{ item.id }}">
                   <button type="submit">Done!</button>

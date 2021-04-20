@@ -1,5 +1,4 @@
 import os
-import requests
 
 TRELLO_KEY = os.environ.get('TRELLO_KEY')
 TRELLO_TKN = os.environ.get('TRELLO_TKN')
