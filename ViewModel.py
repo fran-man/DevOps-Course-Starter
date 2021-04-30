@@ -1,11 +1,11 @@
 from trello_utils import CARD_DONE_STATUS, CARD_TODO_STATUS, CARD_DOING_STATUS, ISO_TIMESTAMP_FORMAT, cardComparatorTimestamp
-from datetime import date
+from datetime import date, timedelta
 
 
 def is_done_today(card):
     dt_today = date.today()
     today_start = dt_today.strftime(ISO_TIMESTAMP_FORMAT)
-    today_end = dt_today.replace(day=dt_today.day + 1).strftime(ISO_TIMESTAMP_FORMAT)
+    today_end = (dt_today + timedelta(days=1)).strftime(ISO_TIMESTAMP_FORMAT)
     return (card.status == CARD_DONE_STATUS) \
            and (today_start <= card.last_modified) \
            and (today_end > card.last_modified)
