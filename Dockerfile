@@ -18,6 +18,7 @@ ENTRYPOINT [ "poetry", "run", "flask", "run", "--host=0.0.0.0"]
 FROM base as production
 COPY . ./
 ENV PORT=5000
+RUN chmod +x ./entrypoint.sh
 ENTRYPOINT ./entrypoint.sh
 
 FROM base as test
