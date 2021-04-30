@@ -4,6 +4,7 @@ TRELLO_KEY = os.environ.get('TRELLO_KEY')
 TRELLO_TKN = os.environ.get('TRELLO_TKN')
 
 MONGO_PASS = os.environ.get('MONGO_PASS')
+MONGO_USER = os.environ.get('MONGO_USER')
 
 DEFAULT_PARAMS = {'key': TRELLO_KEY, 'token': TRELLO_TKN}
 

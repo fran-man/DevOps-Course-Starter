@@ -67,13 +67,14 @@ def create_app():
 
 class MongoConnectionManager:
     MONGO_PASS = trello_utils.MONGO_PASS
+    MONGO_USER = trello_utils.MONGO_USER
 
     mongo_client = None
 
     def get_database(self):
         if self.mongo_client is None:
             self.mongo_client = pymongo.MongoClient(
-                "mongodb+srv://GEORGE_DEVOPS:" + self.MONGO_PASS + "@cluster0.wyf78.mongodb.net/DevopsEx?retryWrites=true&w=majority")
+                "mongodb+srv://" + self.MONGO_USER + ":" + self.MONGO_PASS + "@cluster0.wyf78.mongodb.net/DevopsEx?retryWrites=true&w=majority")
         return self.mongo_client['DevopsEx']
 
 
