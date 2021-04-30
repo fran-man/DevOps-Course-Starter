@@ -1,7 +1,3 @@
-import os
-
-from flask import json
-
 import pytest
 from bson.objectid import ObjectId
 from dotenv import find_dotenv, load_dotenv
@@ -32,22 +28,6 @@ def test_example(client, monkeypatch):
     assert 'card2' in response.data.decode('utf-8')
 
 
-class MockedCardsResponse:
-    @staticmethod
-    def json():
-        with open('cards_example_response.json', 'r') as file:
-            content = file.read()
-        return json.loads(content)
-
-
-class MockedListResponse:
-    @staticmethod
-    def json():
-        with open('list_example.json', 'r') as file:
-            content = file.read()
-        return json.loads(content)
-
-
 class MockMongoCollection:
     def __init__(self, name):
         self.name = name
@@ -66,9 +46,3 @@ def mock_mongo(*args, **kwargs):
                          'doing': MockMongoCollection('card2'),
                          'done_items': MockMongoCollection('card3')
                          }}
-
-
-def example_repsponse():
-    with open('cards_example_response.json', 'r') as file:
-        content = file.read()
-    return json.loads(content)

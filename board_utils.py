@@ -1,15 +1,7 @@
 import os
 
-TRELLO_KEY = os.environ.get('TRELLO_KEY')
-TRELLO_TKN = os.environ.get('TRELLO_TKN')
-
 MONGO_PASS = os.environ.get('MONGO_PASS')
 MONGO_USER = os.environ.get('MONGO_USER')
-
-DEFAULT_PARAMS = {'key': TRELLO_KEY, 'token': TRELLO_TKN}
-
-TRELLO_BOARD = os.environ.get('TRELLO_BOARD')
-TRELLO_URL_BASE = 'https://api.trello.com/1/'
 
 ISO_TIMESTAMP_FORMAT = '%Y-%m-%dT%H:%M:%S.%fZ'
 
@@ -21,7 +13,7 @@ MONGO_LIST_DONE = 'done_items'
 MONGO_LIST_DOING = 'doing'
 MONGO_LIST_TODO = 'to_do'
 
-def mapTrelloCardsToLocalRepresentation(cards):
+def mapCardsToLocalRepresentation(cards):
     all_card_list = []
     for status, status_list in cards.items():
         for card in status_list:

@@ -113,12 +113,9 @@ When running the production docker image, no bind mount is required since `Docke
 ### Required .env Vars
 As it stands, there are some variables that are required for the app to work (see `.env.template`) for example.
     
-    # Represents the API key an token that you will need to retrieve from trello
-    TRELLO_KEY=XXXX
-    TRELLO_TKN=YYYY
-    # The id of the trello board that you wish the app to interact with.
-    # This can be obtained by manually calling the API with postman, or via the trello site
-    TRELLO_BOARD=ZZZZ
+    # Represents the username and pass to connect to mongo
+    MONGO_PASS=XXXX
+    MONGO_USER=YYYY
     
 ## Travis
 The application has been enhanced to allow the tests to be run by travis (inside a docker container). Please see `.travis.yml`.

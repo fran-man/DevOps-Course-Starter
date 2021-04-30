@@ -1,6 +1,6 @@
 from flask import Flask, render_template, request, redirect
 from ViewModel import TodoListViewModel
-import trello_utils
+import board_utils
 import pymongo
 from bson.objectid import ObjectId
 import datetime
@@ -15,7 +15,7 @@ def create_app():
     def index():
         print('getting all cards!!!')
         full_list = get_all_cards()
-        v_model = TodoListViewModel(trello_utils.mapTrelloCardsToLocalRepresentation(full_list))
+        v_model = TodoListViewModel(board_utils.mapCardsToLocalRepresentation(full_list))
         return render_template('index.html', v_model=v_model)
 
     @app.route('/add-list-item', methods=['POST'])
@@ -27,7 +27,7 @@ def create_app():
             'dateLastActivity': datetime.datetime.now().isoformat()
         }
         devops_database = mongo_manager.get_database()
-        inserted_id = devops_database[trello_utils.MONGO_LIST_TODO].insert_one(card).inserted_id
+        inserted_id = devops_database[board_utils.MONGO_LIST_TODO].insert_one(card).inserted_id
         print('Created card with ID: ' + str(inserted_id))
         return redirect("/")
 
@@ -36,19 +36,19 @@ def create_app():
         print('Updating Item!')
         print(request.form.get('id'))
         card_id = request.form.get('id')
-        card_old_list = trello_utils.MONGO_LIST_TODO
+        card_old_list = board_utils.MONGO_LIST_TODO
 
         devops_database = mongo_manager.get_database()
 
-        completed_card = devops_database[trello_utils.MONGO_LIST_TODO].find_one({'_id': ObjectId(card_id)})
+        completed_card = devops_database[board_utils.MONGO_LIST_TODO].find_one({'_id': ObjectId(card_id)})
         if completed_card is None:
-            card_old_list = trello_utils.MONGO_LIST_DOING
-            completed_card = devops_database[trello_utils.MONGO_LIST_DOING].find_one({'_id': ObjectId(card_id)})
+            card_old_list = board_utils.MONGO_LIST_DOING
+            completed_card = devops_database[board_utils.MONGO_LIST_DOING].find_one({'_id': ObjectId(card_id)})
             if completed_card is None:
                 print('No card to update with ID: ' + card_id)
                 return redirect("/")
         devops_database[card_old_list].delete_one({'_id': completed_card['_id']})
-        devops_database[trello_utils.MONGO_LIST_DONE].insert_one(completed_card)
+        devops_database[board_utils.MONGO_LIST_DONE].insert_one(completed_card)
         return redirect("/")
 
     def get_all_cards():
@@ -57,17 +57,17 @@ def create_app():
         doing_items = devops_database['doing'].find()
         done_items = devops_database['done_items'].find()
         return {
-            trello_utils.MONGO_LIST_TODO: to_do_items,
-            trello_utils.MONGO_LIST_DOING: doing_items,
-            trello_utils.MONGO_LIST_DONE: done_items
+            board_utils.MONGO_LIST_TODO: to_do_items,
+            board_utils.MONGO_LIST_DOING: doing_items,
+            board_utils.MONGO_LIST_DONE: done_items
         }
 
     return app
 
 
 class MongoConnectionManager:
-    MONGO_PASS = trello_utils.MONGO_PASS
-    MONGO_USER = trello_utils.MONGO_USER
+    MONGO_PASS = board_utils.MONGO_PASS
+    MONGO_USER = board_utils.MONGO_USER
 
     mongo_client = None
 

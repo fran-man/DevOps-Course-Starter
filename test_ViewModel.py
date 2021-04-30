@@ -1,6 +1,6 @@
 from ViewModel import TodoListViewModel
-from trello_utils import Card, cardComparator, cardComparatorId, ISO_TIMESTAMP_FORMAT
-from trello_utils import CARD_DONE_STATUS, CARD_TODO_STATUS, CARD_DOING_STATUS
+from board_utils import Card, cardComparator, cardComparatorId, ISO_TIMESTAMP_FORMAT
+from board_utils import CARD_DONE_STATUS, CARD_TODO_STATUS, CARD_DOING_STATUS
 from datetime import datetime
 
 test_list = [

@@ -1,4 +1,4 @@
-from trello_utils import CARD_DONE_STATUS, CARD_TODO_STATUS, CARD_DOING_STATUS, ISO_TIMESTAMP_FORMAT, cardComparatorTimestamp
+from board_utils import CARD_DONE_STATUS, CARD_TODO_STATUS, CARD_DOING_STATUS, ISO_TIMESTAMP_FORMAT, cardComparatorTimestamp
 from datetime import date, timedelta
 
 
