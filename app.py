@@ -1,4 +1,6 @@
 from flask import Flask, render_template, request, redirect
+from flask_login import login_required
+from auth import init_auth, get_access_token
 from ViewModel import TodoListViewModel
 import board_utils
 import pymongo
@@ -8,10 +10,12 @@ import datetime
 
 def create_app():
     app = Flask(__name__)
+    init_auth(app)
 
     mongo_manager = MongoConnectionManager()
 
     @app.route('/')
+    @login_required
     def index():
         print('getting all cards!!!')
         full_list = get_all_cards()
@@ -19,6 +23,7 @@ def create_app():
         return render_template('index.html', v_model=v_model)
 
     @app.route('/add-list-item', methods=['POST'])
+    @login_required
     def addListItem():
         print("Adding Item!")
         card_title = request.form.get('new_card_textbox')
@@ -32,6 +37,7 @@ def create_app():
         return redirect("/")
 
     @app.route('/completeditem', methods=['POST'])
+    @login_required
     def updateListItem():
         print('Updating Item!')
         print(request.form.get('id'))
@@ -50,6 +56,12 @@ def create_app():
         devops_database[card_old_list].delete_one({'_id': completed_card['_id']})
         devops_database[board_utils.MONGO_LIST_DONE].insert_one(completed_card)
         return redirect("/")
+
+    @app.route('/login/callback', methods=['GET'])
+    def login_callback():
+        auth_code = request.args.get('code')
+        auth_state = request.args.get('state')
+        return get_access_token(auth_code, auth_state)
 
     def get_all_cards():
         devops_database = mongo_manager.get_database()
