@@ -17,8 +17,9 @@ ENTRYPOINT [ "poetry", "run", "flask", "run", "--host=0.0.0.0"]
 
 FROM base as production
 COPY . ./
-
-ENTRYPOINT "poetry run gunicorn --config gunicorn_config.py wsgi:app --bind 0.0.0.0:$PORT"
+ENV PORT=5000
+RUN chmod +x ./entrypoint.sh
+ENTRYPOINT ./entrypoint.sh
 
 FROM base as test
 RUN curl -sSL https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb -o chrome.deb; \
