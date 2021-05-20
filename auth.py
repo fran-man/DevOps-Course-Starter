@@ -1,16 +1,20 @@
-from flask_login import LoginManager
+from flask_login import LoginManager, login_user
 from flask import redirect
 import requests
+from TodoUser import TodoUser
 from oauthlib.oauth2 import WebApplicationClient
 import random, string
 import os
 
 OAUTH_ID = os.environ.get('OAUTH_ID')
 OAUTH_SECRET = os.environ.get('OAUTH_SECRET')
+SECRET_KEY = os.environ.get('secret_key')
 
 
 def init_auth(app):
     login_mgr = LoginManager()
+
+    app.secret_key = SECRET_KEY
 
     @login_mgr.unauthorized_handler
     def unauthorised():
@@ -25,7 +29,7 @@ def init_auth(app):
 
     @login_mgr.user_loader
     def load_user(user_id):
-        return None
+        return TodoUser(user_id)
 
     login_mgr.init_app(app)
 
@@ -43,10 +47,12 @@ def get_access_token(code, state):
     token_request[1]['Accept'] = 'application/json'
     access_token_response = requests.post(token_request[0], data=token_request[2], headers=token_request[1]).content
     token_params = auth_client.parse_request_body_response(access_token_response)
-    access_token_string = token_params['access_token']
+    return token_params['access_token']
 
-    user_request_headers = {'Authorization':'bearer ' + access_token_string}
 
-    print(requests.get('https://api.github.com/user', headers=user_request_headers).json())
-
-    return 'a'
+def github_login(code, state):
+    access_token = get_access_token(code, state)
+    user_request_headers = {'Authorization': 'bearer ' + access_token}
+    user_id = requests.get('https://api.github.com/user', headers=user_request_headers).json()['id']
+    user = TodoUser(user_id)
+    login_user(user)

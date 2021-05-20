@@ -1,15 +1,21 @@
 from flask import Flask, render_template, request, redirect
 from flask_login import login_required
-from auth import init_auth, get_access_token
+from auth import init_auth, github_login
 from ViewModel import TodoListViewModel
 import board_utils
 import pymongo
 from bson.objectid import ObjectId
 import datetime
+import os
 
 
 def create_app():
     app = Flask(__name__)
+    if os.environ.get('LOGIN_DISABLED') is None:
+        app.config['LOGIN_DISABLED'] = False
+    else:
+        print('true')
+        app.config['LOGIN_DISABLED'] = os.environ.get('LOGIN_DISABLED')
     init_auth(app)
 
     mongo_manager = MongoConnectionManager()
@@ -61,7 +67,8 @@ def create_app():
     def login_callback():
         auth_code = request.args.get('code')
         auth_state = request.args.get('state')
-        return get_access_token(auth_code, auth_state)
+        github_login(auth_code, auth_state)
+        return redirect("/")
 
     def get_all_cards():
         devops_database = mongo_manager.get_database()
