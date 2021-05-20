@@ -1,27 +1,10 @@
-import os
 from threading import Thread
 
 import pytest
-import requests
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 
 import app
-from trello_utils import TRELLO_URL_BASE, DEFAULT_PARAMS
-
-def create_board():
-    params = {'name': 'integration_test'}
-    params.update(DEFAULT_PARAMS)
-    print(DEFAULT_PARAMS)
-    print(TRELLO_URL_BASE)
-    response = requests.post(TRELLO_URL_BASE + 'boards/', data=params).json()
-    board_id = response['id']
-    return board_id
-
-
-def delete_board(board_id):
-    requests.delete(TRELLO_URL_BASE + 'boards/' + board_id, data=DEFAULT_PARAMS).json()
-
 
 @pytest.fixture(scope="module")
 def driver():
@@ -34,9 +17,6 @@ def driver():
 
 @pytest.fixture(scope='module')
 def test_app():
-    # Create the new board & update the board id environment variable
-    board_id = create_board()
-    os.environ['TRELLO_BOARD'] = board_id
     # construct the new application
     application = app.create_app()
     # start the app in its own thread.
@@ -46,7 +26,6 @@ def test_app():
     yield app
     # Tear Down
     thread.join(1)
-    delete_board(board_id)
 
 
 def test_basic_endtoend_flow(driver, test_app):

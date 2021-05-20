@@ -5,10 +5,10 @@ ENV PATH=${POETRY_HOME}/bin:${PATH}
 RUN apt-get update; apt-get -y install curl; \
     curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python; \
     mkdir /app
-RUN poetry config virtualenvs.create false --local
 WORKDIR /app
 EXPOSE 5000
 COPY pyproject.toml /app
+RUN poetry config virtualenvs.create false --local
 RUN export PATH=$PATH:$HOME/.poetry/bin; poetry install --no-dev
 
 FROM base as development
@@ -17,8 +17,9 @@ ENTRYPOINT [ "poetry", "run", "flask", "run", "--host=0.0.0.0"]
 
 FROM base as production
 COPY . ./
-
-ENTRYPOINT [ "poetry", "run", "gunicorn", "--config", "gunicorn_config.py", "wsgi:app"]
+ENV PORT=5000
+RUN chmod +x ./entrypoint.sh
+ENTRYPOINT ./entrypoint.sh
 
 FROM base as test
 RUN curl -sSL https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb -o chrome.deb; \
