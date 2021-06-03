@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request, redirect
-from flask_login import login_required
+from flask_login import login_required, current_user
 from auth import init_auth, github_login
 from ViewModel import TodoListViewModel
 import board_utils
@@ -14,7 +14,6 @@ def create_app():
     if os.environ.get('LOGIN_DISABLED') is None:
         app.config['LOGIN_DISABLED'] = False
     else:
-        print('true')
         app.config['LOGIN_DISABLED'] = os.environ.get('LOGIN_DISABLED')
     init_auth(app)
 
@@ -31,36 +30,42 @@ def create_app():
     @app.route('/add-list-item', methods=['POST'])
     @login_required
     def addListItem():
-        print("Adding Item!")
-        card_title = request.form.get('new_card_textbox')
-        card = {
-            'name': card_title,
-            'dateLastActivity': datetime.datetime.now().isoformat()
-        }
-        devops_database = mongo_manager.get_database()
-        inserted_id = devops_database[board_utils.MONGO_LIST_TODO].insert_one(card).inserted_id
-        print('Created card with ID: ' + str(inserted_id))
+        if current_user.role == "writer":
+            print("Adding Item!")
+            card_title = request.form.get('new_card_textbox')
+            card = {
+                'name': card_title,
+                'dateLastActivity': datetime.datetime.now().isoformat()
+            }
+            devops_database = mongo_manager.get_database()
+            inserted_id = devops_database[board_utils.MONGO_LIST_TODO].insert_one(card).inserted_id
+            print('Created card with ID: ' + str(inserted_id))
+        else:
+            print('User with role: ' + current_user.role + ' does not have permission to add items')
         return redirect("/")
 
     @app.route('/completeditem', methods=['POST'])
     @login_required
     def updateListItem():
-        print('Updating Item!')
-        print(request.form.get('id'))
-        card_id = request.form.get('id')
-        card_old_list = board_utils.MONGO_LIST_TODO
+        if current_user.role == "writer":
+            print('Updating Item!')
+            print(request.form.get('id'))
+            card_id = request.form.get('id')
+            card_old_list = board_utils.MONGO_LIST_TODO
 
-        devops_database = mongo_manager.get_database()
+            devops_database = mongo_manager.get_database()
 
-        completed_card = devops_database[board_utils.MONGO_LIST_TODO].find_one({'_id': ObjectId(card_id)})
-        if completed_card is None:
-            card_old_list = board_utils.MONGO_LIST_DOING
-            completed_card = devops_database[board_utils.MONGO_LIST_DOING].find_one({'_id': ObjectId(card_id)})
+            completed_card = devops_database[board_utils.MONGO_LIST_TODO].find_one({'_id': ObjectId(card_id)})
             if completed_card is None:
-                print('No card to update with ID: ' + card_id)
-                return redirect("/")
-        devops_database[card_old_list].delete_one({'_id': completed_card['_id']})
-        devops_database[board_utils.MONGO_LIST_DONE].insert_one(completed_card)
+                card_old_list = board_utils.MONGO_LIST_DOING
+                completed_card = devops_database[board_utils.MONGO_LIST_DOING].find_one({'_id': ObjectId(card_id)})
+                if completed_card is None:
+                    print('No card to update with ID: ' + card_id)
+                    return redirect("/")
+            devops_database[card_old_list].delete_one({'_id': completed_card['_id']})
+            devops_database[board_utils.MONGO_LIST_DONE].insert_one(completed_card)
+        else:
+            print('User with role: ' + current_user.role + ' does not have permission to update items')
         return redirect("/")
 
     @app.route('/login/callback', methods=['GET'])
