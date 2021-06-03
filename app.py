@@ -3,7 +3,7 @@ from flask_login import login_required, current_user
 from auth import init_auth, github_login
 from ViewModel import TodoListViewModel
 import board_utils
-import pymongo
+from MongoConnectionManager import MongoConnectionManager
 from bson.objectid import ObjectId
 import datetime
 import os
@@ -31,7 +31,7 @@ def create_app():
     @app.route('/add-list-item', methods=['POST'])
     @login_required
     def addListItem():
-        if current_user_role_if_login_enabled() == "writer":
+        if user_can_write():
             print("Adding Item!")
             card_title = request.form.get('new_card_textbox')
             card = {
@@ -48,7 +48,7 @@ def create_app():
     @app.route('/completeditem', methods=['POST'])
     @login_required
     def updateListItem():
-        if current_user_role_if_login_enabled() == "writer":
+        if user_can_write():
             print('Updating Item!')
             print(request.form.get('id'))
             card_id = request.form.get('id')
@@ -87,8 +87,10 @@ def create_app():
             board_utils.MONGO_LIST_DONE: done_items
         }
 
+    def user_can_write():
+        return current_user_role_if_login_enabled() in ['writer','admin']
+
     def current_user_role_if_login_enabled():
-        print(app.config['LOGIN_DISABLED'])
         if app.config['LOGIN_DISABLED']:
             return "writer"
         else:
@@ -96,19 +98,6 @@ def create_app():
 
 
     return app
-
-
-class MongoConnectionManager:
-    MONGO_PASS = board_utils.MONGO_PASS
-    MONGO_USER = board_utils.MONGO_USER
-
-    mongo_client = None
-
-    def get_database(self):
-        if self.mongo_client is None:
-            self.mongo_client = pymongo.MongoClient(
-                "mongodb+srv://" + self.MONGO_USER + ":" + self.MONGO_PASS + "@cluster0.wyf78.mongodb.net/DevopsEx?retryWrites=true&w=majority")
-        return self.mongo_client['DevopsEx']
 
 
 app = create_app()

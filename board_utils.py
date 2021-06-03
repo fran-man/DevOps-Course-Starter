@@ -12,6 +12,7 @@ CARD_DOING_STATUS = 'Doing'
 MONGO_LIST_DONE = 'done_items'
 MONGO_LIST_DOING = 'doing'
 MONGO_LIST_TODO = 'to_do'
+MONGO_LIST_USERS = 'users'
 
 def mapCardsToLocalRepresentation(cards):
     all_card_list = []
