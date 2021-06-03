@@ -14,10 +14,13 @@
         <h3>To-Do</h3>
       <ul class="list-group mb-4">
           {% for item in v_model.items_todo %}
-              <li>{{ item.name }} - {{ item.status }}<form action="/completeditem" method="post">
-                  <input type="hidden" name="id" value="{{ item.id }}">
-                  <button type="submit">Done!</button>
-              </form>
+              <li>{{ item.name }} - {{ item.status }}
+                  {% if v_model.user_role == "writer" %}
+                    <form action="/completeditem" method="post">
+                        <input type="hidden" name="id" value="{{ item.id }}">
+                        <button type="submit">Done!</button>
+                    </form>
+                  {% endif %}
               </li>
           {% endfor %}
       </ul>
@@ -26,10 +29,13 @@
         <h3>Doing</h3>
     <ul class="list-group mb-4">
           {% for item in v_model.items_doing %}
-              <li>{{ item.name }} - {{ item.status }}<form action="/completeditem" method="post">
-                  <input type="hidden" name="id" value="{{ item.id }}">
-                  <button type="submit">Done!</button>
-              </form>
+              <li>{{ item.name }} - {{ item.status }}
+                  {% if v_model.user_role == "writer" %}
+                    <form action="/completeditem" method="post">
+                        <input type="hidden" name="id" value="{{ item.id }}">
+                        <button type="submit">Done!</button>
+                    </form>
+                  {% endif %}
               </li>
           {% endfor %}
       </ul>
@@ -38,10 +44,13 @@
         <h3>Done</h3>
     <ul class="list-group mb-4">
           {% for item in v_model.done_most_recent %}
-              <li>{{ item.name }} - {{ item.status }}<form action="/completeditem" method="post">
-                  <input type="hidden" name="id" value="{{ item.id }}">
-                  <button type="submit">Done!</button>
-              </form>
+              <li>{{ item.name }} - {{ item.status }}
+                  {% if v_model.user_role == "writer" %}
+                    <form action="/completeditem" method="post">
+                        <input type="hidden" name="id" value="{{ item.id }}">
+                        <button type="submit">Done!</button>
+                    </form>
+                  {% endif %}
               </li>
           {% endfor %}
       </ul>
@@ -51,19 +60,24 @@
     <div class="list">
     <ul class="list-group mb-4">
           {% for item in v_model.older_done_items %}
-              <li>{{ item.name }} - {{ item.status }}<form action="/completeditem" method="post">
-                  <input type="hidden" name="id" value="{{ item.id }}">
-                  <button type="submit">Done!</button>
-              </form>
+              <li>{{ item.name }} - {{ item.status }}
+                  {% if v_model.user_role == "writer" %}
+                    <form action="/completeditem" method="post">
+                        <input type="hidden" name="id" value="{{ item.id }}">
+                        <button type="submit">Done!</button>
+                    </form>
+                  {% endif %}
               </li>
           {% endfor %}
       </ul>
     </div>
     </details>
-    <form action="/add-list-item" method="post">
-        <input type="text" id="new_card_textbox" name="new_card_textbox">
-        <button type="submit">Add a new item!</button>
-    </form>
+        {% if v_model.user_role == "writer" %}
+        <form action="/add-list-item" method="post">
+            <input type="text" id="new_card_textbox" name="new_card_textbox">
+            <button type="submit">Add a new item!</button>
+        </form>
+        {% endif %}
     </div>
   </div>
 {% endblock %}

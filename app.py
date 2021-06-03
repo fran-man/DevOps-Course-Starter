@@ -11,10 +11,10 @@ import os
 
 def create_app():
     app = Flask(__name__)
-    if os.environ.get('LOGIN_DISABLED') is None:
+    if os.environ.get('LOGIN_DISABLED') is None or os.environ.get('LOGIN_DISABLED') != 'True':
         app.config['LOGIN_DISABLED'] = False
     else:
-        app.config['LOGIN_DISABLED'] = os.environ.get('LOGIN_DISABLED')
+        app.config['LOGIN_DISABLED'] = True
     init_auth(app)
 
     mongo_manager = MongoConnectionManager()
@@ -24,13 +24,14 @@ def create_app():
     def index():
         print('getting all cards!!!')
         full_list = get_all_cards()
-        v_model = TodoListViewModel(board_utils.mapCardsToLocalRepresentation(full_list))
+        v_model = TodoListViewModel(board_utils.mapCardsToLocalRepresentation(full_list),
+                                    current_user_role_if_login_enabled())
         return render_template('index.html', v_model=v_model)
 
     @app.route('/add-list-item', methods=['POST'])
     @login_required
     def addListItem():
-        if current_user.role == "writer":
+        if current_user_role_if_login_enabled() == "writer":
             print("Adding Item!")
             card_title = request.form.get('new_card_textbox')
             card = {
@@ -41,13 +42,13 @@ def create_app():
             inserted_id = devops_database[board_utils.MONGO_LIST_TODO].insert_one(card).inserted_id
             print('Created card with ID: ' + str(inserted_id))
         else:
-            print('User with role: ' + current_user.role + ' does not have permission to add items')
+            print('User with role: ' + current_user_role_if_login_enabled() + ' does not have permission to add items')
         return redirect("/")
 
     @app.route('/completeditem', methods=['POST'])
     @login_required
     def updateListItem():
-        if current_user.role == "writer":
+        if current_user_role_if_login_enabled() == "writer":
             print('Updating Item!')
             print(request.form.get('id'))
             card_id = request.form.get('id')
@@ -65,7 +66,7 @@ def create_app():
             devops_database[card_old_list].delete_one({'_id': completed_card['_id']})
             devops_database[board_utils.MONGO_LIST_DONE].insert_one(completed_card)
         else:
-            print('User with role: ' + current_user.role + ' does not have permission to update items')
+            print('User with role: ' + current_user_role_if_login_enabled() + ' does not have permission to update items')
         return redirect("/")
 
     @app.route('/login/callback', methods=['GET'])
@@ -85,6 +86,14 @@ def create_app():
             board_utils.MONGO_LIST_DOING: doing_items,
             board_utils.MONGO_LIST_DONE: done_items
         }
+
+    def current_user_role_if_login_enabled():
+        print(app.config['LOGIN_DISABLED'])
+        if app.config['LOGIN_DISABLED']:
+            return "writer"
+        else:
+            return current_user.role
+
 
     return app
 
