@@ -42,7 +42,7 @@ class MockMongoCollection:
 
 
 def mock_mongo(*args, **kwargs):
-    return {'DevopsEx': {'to_do': MockMongoCollection('card1'),
-                         'doing': MockMongoCollection('card2'),
-                         'done_items': MockMongoCollection('card3')
-                         }}
+    return {'DefaultDatabase': {'to_do': MockMongoCollection('card1'),
+                                'doing': MockMongoCollection('card2'),
+                                'done_items': MockMongoCollection('card3')
+                                }}

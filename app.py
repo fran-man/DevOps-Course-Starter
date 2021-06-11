@@ -88,7 +88,7 @@ def create_app():
         }
 
     def current_user_role_if_login_enabled():
-        print(app.config['LOGIN_DISABLED'])
+        print('Login Disabled: ' + str(app.config['LOGIN_DISABLED']))
         if app.config['LOGIN_DISABLED']:
             return "writer"
         else:
@@ -107,8 +107,13 @@ class MongoConnectionManager:
     def get_database(self):
         if self.mongo_client is None:
             self.mongo_client = pymongo.MongoClient(
-                "mongodb+srv://" + self.MONGO_USER + ":" + self.MONGO_PASS + "@cluster0.wyf78.mongodb.net/DevopsEx?retryWrites=true&w=majority")
-        return self.mongo_client['DevopsEx']
+                "mongodb://"
+                + self.MONGO_USER
+                + ":" + self.MONGO_PASS
+                + "@george-devops.mongo.cosmos.azure.com:10255/DefaultDatabase" +
+                  "?ssl=true&replicaSet=globaldb&retrywrites=false&maxIdleTimeMS=120000&appName=@george-devops@")
+            # mongodb://george-devops:zhiuZ41nCgPHgwVSwQpmQcpnPKMCFpWooPGeXxKbWDsj4BWZZg5PzTIKUTYTP4Y9LOxnpBX6zK4cT5f1bA3QGg==@george-devops.mongo.cosmos.azure.com:10255/?ssl=true&replicaSet=globaldb&retrywrites=false&maxIdleTimeMS=120000&appName=@george-devops@
+        return self.mongo_client['DefaultDatabase']
 
 
 app = create_app()
