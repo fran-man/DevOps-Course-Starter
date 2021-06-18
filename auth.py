@@ -22,7 +22,6 @@ def init_auth(app):
         auth_client = WebApplicationClient(OAUTH_ID)
         auth_uri = auth_client.prepare_request_uri(
             'https://github.com/login/oauth/authorize',
-            redirect_uri='http://127.0.0.1:5000/login/callback',
             state=state
         )
         return redirect(auth_uri)
