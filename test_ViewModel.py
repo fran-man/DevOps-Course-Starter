@@ -53,12 +53,12 @@ def generate_done_card_with_id(id):
 
 
 def test_items_returns_all():
-    view_model = TodoListViewModel(test_list)
+    view_model = TodoListViewModel(test_list, "writer")
     assert len(view_model.items) == 6
 
 
 def test_items_done_all_returns_all_if_less_than_five():
-    view_model = TodoListViewModel(test_list)
+    view_model = TodoListViewModel(test_list, "writer")
     result = list(view_model.items_done_all)
     result.sort(key=cardComparator)
     assert len(result) == 3
@@ -68,7 +68,7 @@ def test_items_done_all_returns_five_if_more_than_five():
     test_list_local = test_list.copy()
     for i in range(7, 11):
         test_list_local.append(generate_done_card_with_id(i))
-    view_model = TodoListViewModel(test_list_local)
+    view_model = TodoListViewModel(test_list_local, "writer")
     result = list(view_model.items_done_all)
     result.sort(key=cardComparatorId)
     assert len(result) == 5
@@ -80,7 +80,7 @@ def test_items_done_all_returns_five_if_more_than_five():
 
 
 def test_items_todo_returns_only_todo_items():
-    view_model = TodoListViewModel(test_list)
+    view_model = TodoListViewModel(test_list, "writer")
     result = list(view_model.items_todo)
     result.sort(key=cardComparator)
     assert len(result) == 2
@@ -89,7 +89,7 @@ def test_items_todo_returns_only_todo_items():
 
 
 def test_items_done_returns_only_done_items():
-    view_model = TodoListViewModel(test_list)
+    view_model = TodoListViewModel(test_list, "writer")
     result = list(view_model.items_done)
     result.sort(key=cardComparator)
     assert len(result) == 3
@@ -99,7 +99,7 @@ def test_items_done_returns_only_done_items():
 
 
 def test_items_doing_returns_only_doing_items():
-    view_model = TodoListViewModel(test_list)
+    view_model = TodoListViewModel(test_list, "writer")
     result = list(view_model.items_doing)
     result.sort(key=cardComparator)
     assert len(result) == 1
@@ -107,7 +107,7 @@ def test_items_doing_returns_only_doing_items():
 
 
 def test_items_done_today_returns_items_completed_today():
-    view_model = TodoListViewModel(test_list)
+    view_model = TodoListViewModel(test_list, "writer")
     result = list(view_model.items_done_today)
     result.sort(key=cardComparator)
     assert len(result) == 1
@@ -115,7 +115,7 @@ def test_items_done_today_returns_items_completed_today():
 
 
 def test_older_done_items_returns_items_completed_before_today():
-    view_model = TodoListViewModel(test_list)
+    view_model = TodoListViewModel(test_list, "writer")
     result = list(view_model.older_done_items)
     result.sort(key=cardComparator)
     assert len(result) == 2

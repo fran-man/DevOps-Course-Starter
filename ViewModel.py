@@ -19,8 +19,13 @@ def is_done_before_day(card):
 
 
 class TodoListViewModel:
-    def __init__(self, items):
+    def __init__(self, items, user_role):
         self._items = items
+        self._user_role = user_role
+
+    @property
+    def user_role(self):
+        return self._user_role
 
     @property
     def items(self):
