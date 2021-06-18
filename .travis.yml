@@ -8,14 +8,11 @@ jobs:
         - docker build --target test --tag devops-starter:test0.1 .
         - docker run --mount type=bind,source="$(pwd)",target=/app --env MONGO_USER --env MONGO_PASS --env LOGIN_DISABLED=True devops-starter:test0.1 .
     - stage: build-tag-push
-      if: branch = master AND type = push
+      if: branch = master
       script:
         - echo "$DOCKER_PASS" | docker login --username "$DOCKER_USER" --password-stdin
         - docker build --target production --tag georgefrancis/devops-starter:"$TRAVIS_COMMIT" .
         - docker tag georgefrancis/devops-starter:"$TRAVIS_COMMIT" georgefrancis/devops-starter:latest
         - docker push georgefrancis/devops-starter:"$TRAVIS_COMMIT"
         - docker push georgefrancis/devops-starter:latest
-        - echo "$HEROKU_API_KEY" | docker login --username=_ --password-stdin registry.heroku.com
-        - docker tag georgefrancis/devops-starter:"$TRAVIS_COMMIT" registry.heroku.com/gsf-devops-mod8/web
-        - docker push registry.heroku.com/"$HEROKU_APP"/web
-        - heroku container:release web --app="$HEROKU_APP"
+        - curl -dH -X POST "$AZURE_DEPLOY_HOOK"
