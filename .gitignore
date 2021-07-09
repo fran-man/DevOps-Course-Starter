@@ -115,6 +115,7 @@ env/
 ### Configuration files ###
 .env
 
+venv/
 **/venv/bin
 **/venv/include
 **/venv3/
@@ -124,4 +125,7 @@ env/
 geckodriver.log
 
 .vagrant/*
-.venv/*
+.terraform
+terraform.tfstate
+
+poetry.lock
