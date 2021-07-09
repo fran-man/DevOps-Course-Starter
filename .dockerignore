@@ -9,3 +9,4 @@ list_example.json
 pytest.ini
 README.md
 Vagrantfile
+.venv/

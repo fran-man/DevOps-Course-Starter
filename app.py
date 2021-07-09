@@ -110,9 +110,8 @@ class MongoConnectionManager:
                 "mongodb://"
                 + self.MONGO_USER
                 + ":" + self.MONGO_PASS
-                + "@george-devops.mongo.cosmos.azure.com:10255/DefaultDatabase" +
-                  "?ssl=true&replicaSet=globaldb&retrywrites=false&maxIdleTimeMS=120000&appName=@george-devops@")
-            # mongodb://george-devops:zhiuZ41nCgPHgwVSwQpmQcpnPKMCFpWooPGeXxKbWDsj4BWZZg5PzTIKUTYTP4Y9LOxnpBX6zK4cT5f1bA3QGg==@george-devops.mongo.cosmos.azure.com:10255/?ssl=true&replicaSet=globaldb&retrywrites=false&maxIdleTimeMS=120000&appName=@george-devops@
+                + "@" + self.MONGO_USER + ".mongo.cosmos.azure.com:10255/DefaultDatabase" +
+                  "?ssl=true&replicaSet=globaldb&retrywrites=false&maxIdleTimeMS=120000")
         return self.mongo_client['DefaultDatabase']
 
 
